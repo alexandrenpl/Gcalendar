@@ -39,7 +39,7 @@ class GoogleCalendarGUI:
         self.root.geometry("900x650")
         self.root.minsize(800, 600)
         
-        # Configurar grid
+        # Configure grid
         self.root.grid_columnconfigure(1, weight=1)
         self.root.grid_rowconfigure(2, weight=1)
         
@@ -49,7 +49,7 @@ class GoogleCalendarGUI:
         self.create_status_bar()
         
     def create_config_section(self):
-        """Cria a secção de configuração."""
+        """Create the configuration section."""
         # Configuration frame
         config_frame = ttk.LabelFrame(self.root, text="Configuration", padding=10)
         config_frame.grid(row=0, column=0, columnspan=2, sticky="ew", padx=10, pady=5)
@@ -110,7 +110,7 @@ class GoogleCalendarGUI:
         ttk.Button(buttons_frame, text="Clear", 
                   command=self.clear_json).pack(side="left", padx=5)
         
-        # Editor de texto
+        # Text editor
         self.json_editor = scrolledtext.ScrolledText(
             editor_frame, 
             height=15, 
@@ -136,7 +136,7 @@ class GoogleCalendarGUI:
         response_frame.grid_columnconfigure(0, weight=1)
         response_frame.grid_rowconfigure(0, weight=1)
         
-        # Área de resposta
+        # Response area
         self.response_text = scrolledtext.ScrolledText(
             response_frame, 
             height=8, 
@@ -191,56 +191,56 @@ class GoogleCalendarGUI:
         self.json_editor.insert(1.0, json.dumps(template, indent=2, ensure_ascii=False))
         
     def load_json_file(self):
-        """Carrega um ficheiro JSON."""
+        """Load a JSON file."""
         file_path = filedialog.askopenfilename(
-            title="Selecionar ficheiro JSON",
-            filetypes=[("Ficheiros JSON", "*.json"), ("Todos os ficheiros", "*.*")]
+            title="Select JSON file",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
         )
         
         if file_path:
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
-                    # Validar JSON
+                    # Validate JSON
                     json.loads(content)
                     self.json_editor.delete(1.0, tk.END)
                     self.json_editor.insert(1.0, content)
-                    self.update_status(f"Ficheiro carregado: {os.path.basename(file_path)}")
+                    self.update_status(f"File loaded: {os.path.basename(file_path)}")
             except json.JSONDecodeError as e:
-                messagebox.showerror("Erro", f"Ficheiro JSON inválido: {e}")
+                messagebox.showerror("Error", f"Invalid JSON file: {e}")
             except Exception as e:
-                logging.error(f"Erro ao carregar ficheiro: {e}")
-                messagebox.showerror("Erro", f"Erro ao carregar ficheiro: {e}")
+                logging.error(f"Error loading file: {e}")
+                messagebox.showerror("Error", f"Error loading file: {e}")
                 
     def format_json(self):
-        """Formata o JSON no editor."""
+        """Format JSON in the editor."""
         try:
             content = self.json_editor.get(1.0, tk.END).strip()
             if not content:
-                messagebox.showwarning("Aviso", "Editor vazio")
+                messagebox.showwarning("Warning", "Editor is empty")
                 return
                 
-            # Validar e formatar JSON
+            # Validate and format JSON
             parsed = json.loads(content)
             formatted = json.dumps(parsed, indent=2, ensure_ascii=False)
             
             self.json_editor.delete(1.0, tk.END)
             self.json_editor.insert(1.0, formatted)
-            self.update_status("JSON formatado com sucesso")
+            self.update_status("JSON formatted successfully")
             
         except json.JSONDecodeError as e:
-            messagebox.showerror("Erro", f"JSON inválido: {e}")
+            messagebox.showerror("Error", f"Invalid JSON: {e}")
         except Exception as e:
-            logging.error(f"Erro ao formatar JSON: {e}")
-            messagebox.showerror("Erro", f"Erro ao formatar JSON: {e}")
+            logging.error(f"Error formatting JSON: {e}")
+            messagebox.showerror("Error", f"Error formatting JSON: {e}")
             
     def clear_json(self):
-        """Limpa o editor de JSON."""
+        """Clear the JSON editor."""
         self.json_editor.delete(1.0, tk.END)
-        self.update_status("Editor limpo")
+        self.update_status("Editor cleared")
         
     def send_to_webapp(self):
-        """Envia o JSON para o Web App. Suporta evento único ou múltiplos eventos."""
+        """Send JSON to Web App. Supports single or multiple events."""
         # Validate configuration
         if not self.url_var.get().strip():
             messagebox.showerror("Error", "Web App URL is required")
@@ -261,34 +261,34 @@ class GoogleCalendarGUI:
             messagebox.showerror("Error", f"JSON error: {e}")
             return
 
-        # Preparar lista de eventos a enviar
+        # Prepare list of events to send
         try:
             events_to_send = []
 
             if isinstance(parsed, list):
-                # Top-level array de eventos
+                # Top-level array of events
                 if not parsed:
-                    raise ValueError("A lista de eventos está vazia")
+                    raise ValueError("Event list is empty")
                 events_to_send = parsed
             elif isinstance(parsed, dict):
                 if 'events' in parsed:
-                    # Objeto com chave 'events' (lista)
+                    # Object with 'events' key (list)
                     events = parsed.get('events')
                     if not isinstance(events, list) or not events:
-                        raise ValueError("'events' deve ser uma lista com pelo menos um evento")
+                        raise ValueError("'events' must be a list with at least one event")
                     events_to_send = events
                 else:
-                    # Evento único como objeto
+                    # Single event as object
                     events_to_send = [parsed]
             else:
-                raise ValueError("JSON deve ser um objeto ou uma lista de eventos")
+                raise ValueError("JSON must be an object or a list of events")
 
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao preparar eventos: {e}")
+            messagebox.showerror("Error", f"Error preparing events: {e}")
             return
 
-        # Enviar eventos (um POST por evento)
-        self.update_status("A enviar eventos...")
+        # Send events (one POST per event)
+        self.update_status("Sending events...")
         self.send_btn.config(state=tk.DISABLED)
 
         headers = {
@@ -297,13 +297,13 @@ class GoogleCalendarGUI:
 
         results = []
         try:
-            logging.info(f"Envio de {len(events_to_send)} evento(s) para: {self.url_var.get()}")
+            logging.info(f"Sending {len(events_to_send)} event(s) to: {self.url_var.get()}")
             logging.info(f"Headers: Content-Type={headers['Content-Type']}")
 
             for idx, event_payload in enumerate(events_to_send, start=1):
                 try:
-                    # Log detalhado por evento (sem dados sensíveis)
-                    logging.info(f"[Evento {idx}] Payload: {json.dumps(event_payload, ensure_ascii=False)}")
+                    # Detailed log per event (no sensitive data)
+                    logging.info(f"[Event {idx}] Payload: {json.dumps(event_payload, ensure_ascii=False)}")
 
                     response = requests.post(
                         self.url_var.get(),
@@ -326,50 +326,50 @@ class GoogleCalendarGUI:
 
                     results.append(result_entry)
                 except requests.exceptions.Timeout:
-                    logging.error(f"[Evento {idx}] Timeout")
+                    logging.error(f"[Event {idx}] Timeout")
                     results.append({'index': idx, 'status_code': 0, 'ok': False, 'body': 'Timeout'})
                 except requests.exceptions.ConnectionError:
-                    logging.error(f"[Evento {idx}] Erro de ligação")
-                    results.append({'index': idx, 'status_code': 0, 'ok': False, 'body': 'Erro de ligação'})
+                    logging.error(f"[Event {idx}] Connection error")
+                    results.append({'index': idx, 'status_code': 0, 'ok': False, 'body': 'Connection error'})
                 except requests.exceptions.RequestException as e:
-                    logging.error(f"[Evento {idx}] Erro na requisição: {e}")
+                    logging.error(f"[Event {idx}] Request error: {e}")
                     results.append({'index': idx, 'status_code': 0, 'ok': False, 'body': f'Request error: {e}'})
                 except Exception as e:
-                    logging.error(f"[Evento {idx}] Erro inesperado: {e}")
-                    results.append({'index': idx, 'status_code': 0, 'ok': False, 'body': f'Erro inesperado: {e}'})
+                    logging.error(f"[Event {idx}] Unexpected error: {e}")
+                    results.append({'index': idx, 'status_code': 0, 'ok': False, 'body': f'Unexpected error: {e}'})
 
-            # Mostrar resultado agregado
+            # Show aggregated result
             self.show_batch_response(results)
 
 
-            self.update_status("Envio concluído")
+            self.update_status("Send completed")
 
         finally:
             self.send_btn.config(state=tk.NORMAL)
             
     def show_response(self, response):
-        """Mostra a resposta da requisição."""
+        """Show the request response."""
         self.response_text.config(state=tk.NORMAL)
         self.response_text.delete(1.0, tk.END)
         
-        # Cabeçalho com status HTTP
+        # Header with HTTP status
         header = f"HTTP {response.status_code}\n"
         self.response_text.insert(tk.END, header)
         
-        # Corpo da resposta
+        # Response body
         try:
-            # Tentar parsear como JSON
+            # Try to parse as JSON
             response_json = response.json()
             response_text = json.dumps(response_json, indent=2, ensure_ascii=False)
         except:
-            # Se não for JSON, mostrar texto raw
+            # If not JSON, show raw text
             response_text = response.text
             
         self.response_text.insert(tk.END, response_text)
         self.response_text.config(state=tk.DISABLED)
 
     def show_batch_response(self, results):
-        """Mostra um resumo agregado das respostas por evento."""
+        """Show an aggregated summary of responses per event."""
         total = len(results)
         succeeded = sum(1 for r in results if r.get('ok'))
         failed = total - succeeded
@@ -378,100 +378,100 @@ class GoogleCalendarGUI:
         self.response_text.delete(1.0, tk.END)
 
         summary = [
-            f"Total de eventos: {total}",
-            f"Sucesso: {succeeded}",
-            f"Falhas: {failed}",
+            f"Total events: {total}",
+            f"Success: {succeeded}",
+            f"Failures: {failed}",
             "",
-            "Detalhes por evento:",
+            "Details per event:",
         ]
 
         for r in results:
             idx = r.get('index')
             status = r.get('status_code')
-            ok_flag = 'OK' if r.get('ok') else 'FALHA'
+            ok_flag = 'OK' if r.get('ok') else 'FAILED'
             body = r.get('body')
             try:
                 body_text = json.dumps(body, ensure_ascii=False, indent=2) if isinstance(body, (dict, list)) else str(body)
             except Exception:
                 body_text = str(body)
-            summary.append(f"--- Evento {idx} | HTTP {status} | {ok_flag}")
+            summary.append(f"--- Event {idx} | HTTP {status} | {ok_flag}")
             summary.append(body_text)
 
         self.response_text.insert(tk.END, "\n".join(summary))
         self.response_text.config(state=tk.DISABLED)
         
     def show_error_response(self, error_msg):
-        """Mostra uma mensagem de erro na área de resposta."""
+        """Show an error message in the response area."""
         self.response_text.config(state=tk.NORMAL)
         self.response_text.delete(1.0, tk.END)
-        self.response_text.insert(tk.END, f"ERRO: {error_msg}")
+        self.response_text.insert(tk.END, f"ERROR: {error_msg}")
         self.response_text.config(state=tk.DISABLED)
-        self.update_status("Erro")
+        self.update_status("Error")
         
     def update_status(self, message):
-        """Atualiza a barra de estado."""
+        """Update the status bar."""
         self.status_var.set(message)
         
         
     def open_log_file(self):
-        """Abre o ficheiro de log para visualização."""
+        """Open the log file for viewing."""
         try:
             if os.path.exists('gcal_gui.log'):
                 os.startfile('gcal_gui.log')
             else:
-                messagebox.showinfo("Info", "Ficheiro de log não encontrado.")
+                messagebox.showinfo("Info", "Log file not found.")
         except Exception as e:
-            messagebox.showerror("Erro", f"Não foi possível abrir o ficheiro de log: {e}")
+            messagebox.showerror("Error", f"Could not open log file: {e}")
             
     def test_webapp_url(self):
-        """Testa se o Web App URL está acessível."""
+        """Test if the Web App URL is accessible."""
         url = self.url_var.get().strip()
         if not url:
-            messagebox.showerror("Erro", "Web App URL não configurado")
+            messagebox.showerror("Error", "Web App URL not configured")
             return
             
         try:
             import webbrowser
             webbrowser.open(url)
-            messagebox.showinfo("Info", "Web App aberto no browser. Verifique se está acessível.")
+            messagebox.showinfo("Info", "Web App opened in browser. Check if it's accessible.")
         except Exception as e:
-            messagebox.showerror("Erro", f"Não foi possível abrir o URL: {e}")
+            messagebox.showerror("Error", f"Could not open URL: {e}")
             
     def show_debug_info(self):
-        """Mostra informações de debug da configuração atual."""
+        """Show debug information about current configuration."""
         debug_info = f"""
-🔧 INFORMAÇÕES DE DEBUG
+🔧 DEBUG INFORMATION
 
-Configuração Atual:
-• Web App URL: {self.url_var.get() or '[NÃO CONFIGURADO]'}
-• Calendar ID: {self.calendar_var.get() or '[NÃO CONFIGURADO]'}
+Current Configuration:
+• Web App URL: {self.url_var.get() or '[NOT CONFIGURED]'}
+• Calendar ID: {self.calendar_var.get() or '[NOT CONFIGURED]'}
 
-Ficheiros:
-• .env existe: {'SIM' if os.path.exists('.env') else 'NÃO'}
-• gcal_gui.log existe: {'SIM' if os.path.exists('gcal_gui.log') else 'NÃO'}
+Files:
+• .env exists: {'YES' if os.path.exists('.env') else 'NO'}
+• gcal_gui.log exists: {'YES' if os.path.exists('gcal_gui.log') else 'NO'}
 
-JSON no Editor:
-• Conteúdo: {'[VAZIO]' if not self.json_editor.get(1.0, tk.END).strip() else '[PRESENTE]'}
-• Tamanho: {len(self.json_editor.get(1.0, tk.END).strip())} caracteres
+JSON in Editor:
+• Content: {'[EMPTY]' if not self.json_editor.get(1.0, tk.END).strip() else '[PRESENT]'}
+• Size: {len(self.json_editor.get(1.0, tk.END).strip())} characters
 
-Dicas:
-• Confirme que o Web App está publicado como "Anyone"
-• Teste o URL diretamente no browser
-• Verifique os logs para mais detalhes
-• O script não precisa de autenticação - só envia JSON
+Tips:
+• Confirm the Web App is published as "Anyone"
+• Test the URL directly in browser
+• Check logs for more details
+• The script doesn't need authentication - just sends JSON
         """
         
-        # Criar janela de debug
+        # Create debug window
         debug_window = tk.Toplevel(self.root)
-        debug_window.title("Informações de Debug")
+        debug_window.title("Debug Information")
         debug_window.geometry("500x400")
         debug_window.resizable(True, True)
         
-        # Frame principal
+        # Main frame
         main_frame = ttk.Frame(debug_window, padding=10)
         main_frame.pack(fill=tk.BOTH, expand=True)
         
-        # Texto de debug
+        # Debug text
         text_widget = scrolledtext.ScrolledText(
             main_frame,
             wrap=tk.WORD,
@@ -480,48 +480,48 @@ Dicas:
         )
         text_widget.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
         
-        # Inserir texto
+        # Insert text
         text_widget.config(state=tk.NORMAL)
         text_widget.insert(1.0, debug_info)
         text_widget.config(state=tk.DISABLED)
         
-        # Botões
+        # Buttons
         button_frame = ttk.Frame(main_frame)
         button_frame.pack(fill=tk.X)
         
         ttk.Button(
             button_frame,
-            text="Copiar Info",
+            text="Copy Info",
             command=lambda: self.copy_debug_info(debug_info)
         ).pack(side=tk.LEFT, padx=(0, 5))
         
         ttk.Button(
             button_frame,
-            text="Fechar",
+            text="Close",
             command=debug_window.destroy
         ).pack(side=tk.RIGHT)
         
     def copy_debug_info(self, debug_info):
-        """Copia as informações de debug para a área de transferência."""
+        """Copy debug information to clipboard."""
         try:
             self.root.clipboard_clear()
             self.root.clipboard_append(debug_info)
-            messagebox.showinfo("Sucesso", "Informações de debug copiadas para a área de transferência!")
+            messagebox.showinfo("Success", "Debug information copied to clipboard!")
         except Exception as e:
-            messagebox.showerror("Erro", f"Não foi possível copiar: {e}")
+            messagebox.showerror("Error", f"Could not copy: {e}")
             
             
     def test_webapp_directly(self):
-        """Testa o Web App com um GET request simples."""
+        """Test the Web App with a simple GET request."""
         if not self.url_var.get().strip():
-            messagebox.showerror("Erro", "Web App URL é obrigatório")
+            messagebox.showerror("Error", "Web App URL is required")
             return
             
-        self.update_status("A testar Web App...")
+        self.update_status("Testing Web App...")
         
         try:
-            # Teste GET simples
-            logging.info("=== TESTE DIRETO DO WEB APP ===")
+            # Simple GET test
+            logging.info("=== DIRECT WEB APP TEST ===")
             logging.info(f"URL: {self.url_var.get()}")
             
             response = requests.get(self.url_var.get(), timeout=10)
@@ -530,7 +530,7 @@ Dicas:
             logging.info(f"GET Response headers: {dict(response.headers)}")
             logging.info(f"GET Response body: {response.text}")
             
-            # Mostrar resultado
+            # Show result
             self.response_text.config(state=tk.NORMAL)
             self.response_text.delete(1.0, tk.END)
             
@@ -544,37 +544,37 @@ Dicas:
             
             if response.status_code == 200:
                 if "doGet" in response.text:
-                    messagebox.showwarning("Aviso", 
-                        "Web App responde, mas não tem função doGet().\n"
-                        "Isto é normal - o Web App só aceita POST requests.\n"
-                        "Continue com o teste de autenticação.")
+                    messagebox.showwarning("Warning", 
+                        "Web App responds, but doesn't have doGet() function.\n"
+                        "This is normal - the Web App only accepts POST requests.\n"
+                        "Continue with authentication test.")
                 else:
-                    messagebox.showinfo("Sucesso", "Web App está acessível!")
-                self.update_status("✅ Web App acessível")
+                    messagebox.showinfo("Success", "Web App is accessible!")
+                self.update_status("✅ Web App accessible")
             else:
-                messagebox.showerror("Erro", f"Web App retornou HTTP {response.status_code}")
-                self.update_status("❌ Web App com problemas")
+                messagebox.showerror("Error", f"Web App returned HTTP {response.status_code}")
+                self.update_status("❌ Web App with problems")
                 
         except requests.exceptions.ConnectionError:
-            error_msg = "Não foi possível conectar ao Web App. Verifique o URL."
+            error_msg = "Could not connect to Web App. Check the URL."
             logging.error(error_msg)
-            messagebox.showerror("Erro de Ligação", error_msg)
-            self.update_status("❌ Erro de ligação")
+            messagebox.showerror("Connection Error", error_msg)
+            self.update_status("❌ Connection error")
         except Exception as e:
-            error_msg = f"Erro no teste: {e}"
+            error_msg = f"Test error: {e}"
             logging.error(error_msg)
-            messagebox.showerror("Erro", error_msg)
-            self.update_status("❌ Erro no teste")
+            messagebox.showerror("Error", error_msg)
+            self.update_status("❌ Test error")
 
 def main():
-    """Função principal."""
+    """Main function."""
     root = tk.Tk()
     
-    # Configurar estilo
+    # Configure style
     style = ttk.Style()
     style.theme_use('clam')
     
-    # Criar e executar aplicação
+    # Create and run application
     app = GoogleCalendarGUI(root)
     
     try:
@@ -582,8 +582,8 @@ def main():
     except KeyboardInterrupt:
         pass
     except Exception as e:
-        logging.error(f"Erro na aplicação: {e}")
-        messagebox.showerror("Erro Fatal", f"Erro inesperado: {e}")
+        logging.error(f"Application error: {e}")
+        messagebox.showerror("Fatal Error", f"Unexpected error: {e}")
 
 if __name__ == "__main__":
     main()
