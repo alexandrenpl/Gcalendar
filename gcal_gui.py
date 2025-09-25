@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Google Calendar GUI - Aplicação Desktop para Enviar Eventos via Web App
-Autor: Assistente IA
-Versão: 1.0
+Google Calendar GUI - Desktop Application to Send Events via Web App
+Author: AI Assistant
+Version: 1.0
 """
 
 import tkinter as tk
@@ -16,7 +16,7 @@ from datetime import datetime
 from dotenv import load_dotenv, set_key
 
 class GoogleCalendarGUI:
-    """Interface gráfica para enviar eventos para Google Calendar via Web App."""
+    """Graphical interface to send events to Google Calendar via Web App."""
     
     def __init__(self, root):
         self.root = root
@@ -25,7 +25,7 @@ class GoogleCalendarGUI:
         self.load_config()
         
     def setup_logging(self):
-        """Configura o sistema de logging para erros técnicos."""
+        """Configure logging system for technical errors."""
         logging.basicConfig(
             filename='gcal_gui.log',
             level=logging.ERROR,
@@ -34,8 +34,8 @@ class GoogleCalendarGUI:
         )
         
     def setup_ui(self):
-        """Configura a interface gráfica."""
-        self.root.title("Google Calendar - Enviar Eventos")
+        """Configure the graphical interface."""
+        self.root.title("Google Calendar - Send Events")
         self.root.geometry("900x650")
         self.root.minsize(800, 600)
         
@@ -50,8 +50,8 @@ class GoogleCalendarGUI:
         
     def create_config_section(self):
         """Cria a secção de configuração."""
-        # Frame de configuração
-        config_frame = ttk.LabelFrame(self.root, text="Configuração", padding=10)
+        # Configuration frame
+        config_frame = ttk.LabelFrame(self.root, text="Configuration", padding=10)
         config_frame.grid(row=0, column=0, columnspan=2, sticky="ew", padx=10, pady=5)
         config_frame.grid_columnconfigure(1, weight=1)
         
@@ -61,19 +61,19 @@ class GoogleCalendarGUI:
         self.url_entry = ttk.Entry(config_frame, textvariable=self.url_var, width=50)
         self.url_entry.grid(row=0, column=1, sticky="ew", padx=(5, 0), pady=2)
         
-        # Calendar ID (opcional - o script usa sempre o calendário padrão)
-        ttk.Label(config_frame, text="Calendar ID (opcional):").grid(row=1, column=0, sticky="w", pady=2)
+        # Calendar ID (optional - script always uses default calendar)
+        ttk.Label(config_frame, text="Calendar ID (optional):").grid(row=1, column=0, sticky="w", pady=2)
         self.calendar_var = tk.StringVar(value="primary")
         self.calendar_entry = ttk.Entry(config_frame, textvariable=self.calendar_var, width=50)
         self.calendar_entry.grid(row=1, column=1, sticky="ew", padx=(5, 0), pady=2)
         
-        # Botões de configuração
+        # Configuration buttons
         buttons_frame = ttk.Frame(config_frame)
         buttons_frame.grid(row=2, column=1, sticky="e", pady=(10, 0))
         
         ttk.Button(
             buttons_frame, 
-            text="Guardar .env", 
+            text="Save .env", 
             command=self.save_config
         ).pack(side=tk.RIGHT, padx=(5, 0))
         
@@ -90,24 +90,24 @@ class GoogleCalendarGUI:
         ).pack(side=tk.RIGHT)
         
     def create_json_editor_section(self):
-        """Cria a secção do editor de JSON."""
-        # Frame do editor JSON
-        editor_frame = ttk.LabelFrame(self.root, text="Editor de JSON", padding=10)
+        """Create the JSON editor section."""
+        # JSON editor frame
+        editor_frame = ttk.LabelFrame(self.root, text="JSON Editor", padding=10)
         editor_frame.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=5)
         editor_frame.grid_columnconfigure(0, weight=1)
         editor_frame.grid_rowconfigure(1, weight=1)
         
-        # Botões do editor
+        # Editor buttons
         buttons_frame = ttk.Frame(editor_frame)
         buttons_frame.grid(row=0, column=0, sticky="ew", pady=(0, 10))
         
-        ttk.Button(buttons_frame, text="Inserir Template teste", 
+        ttk.Button(buttons_frame, text="Insert Test Template", 
                   command=self.insert_test_template).pack(side="left", padx=(0, 5))
-        ttk.Button(buttons_frame, text="Carregar JSON de ficheiro…", 
+        ttk.Button(buttons_frame, text="Load JSON from file…", 
                   command=self.load_json_file).pack(side="left", padx=5)
-        ttk.Button(buttons_frame, text="Formatar JSON", 
+        ttk.Button(buttons_frame, text="Format JSON", 
                   command=self.format_json).pack(side="left", padx=5)
-        ttk.Button(buttons_frame, text="Limpar", 
+        ttk.Button(buttons_frame, text="Clear", 
                   command=self.clear_json).pack(side="left", padx=5)
         
         # Editor de texto
@@ -119,19 +119,19 @@ class GoogleCalendarGUI:
         )
         self.json_editor.grid(row=1, column=0, sticky="nsew")
         
-        # Botão de envio
+        # Send button
         self.send_btn = ttk.Button(
             editor_frame, 
-            text="Enviar para Web App", 
+            text="Send to Web App", 
             command=self.send_to_webapp,
             style="Accent.TButton"
         )
         self.send_btn.grid(row=2, column=0, pady=(10, 0))
         
     def create_response_section(self):
-        """Cria a secção de resposta."""
-        # Frame de resposta
-        response_frame = ttk.LabelFrame(self.root, text="Resposta", padding=10)
+        """Create the response section."""
+        # Response frame
+        response_frame = ttk.LabelFrame(self.root, text="Response", padding=10)
         response_frame.grid(row=2, column=0, columnspan=2, sticky="nsew", padx=10, pady=5)
         response_frame.grid_columnconfigure(0, weight=1)
         response_frame.grid_rowconfigure(0, weight=1)
@@ -147,44 +147,44 @@ class GoogleCalendarGUI:
         self.response_text.grid(row=0, column=0, sticky="nsew")
         
     def create_status_bar(self):
-        """Cria a barra de estado."""
-        self.status_var = tk.StringVar(value="Pronto")
+        """Create the status bar."""
+        self.status_var = tk.StringVar(value="Ready")
         status_bar = ttk.Label(self.root, textvariable=self.status_var, relief=tk.SUNKEN)
         status_bar.grid(row=3, column=0, columnspan=2, sticky="ew", padx=10, pady=(0, 5))
         
             
     def load_config(self):
-        """Carrega a configuração do ficheiro .env."""
+        """Load configuration from .env file."""
         try:
             if os.path.exists('.env'):
                 load_dotenv()
                 self.url_var.set(os.getenv('WEB_APP_URL', ''))
                 calendar_id = os.getenv('CALENDAR_ID', 'primary')
                 self.calendar_var.set(calendar_id)
-                self.update_status("Configuração carregada do ficheiro .env")
+                self.update_status("Configuration loaded from .env file")
         except Exception as e:
-            logging.error(f"Erro ao carregar configuração: {e}")
-            self.update_status("Erro ao carregar configuração")
+            logging.error(f"Error loading configuration: {e}")
+            self.update_status("Error loading configuration")
             
     def save_config(self):
-        """Guarda a configuração no ficheiro .env."""
+        """Save configuration to .env file."""
         try:
             set_key('.env', 'WEB_APP_URL', self.url_var.get())
             set_key('.env', 'CALENDAR_ID', self.calendar_var.get())
-            self.update_status("Configuração guardada no ficheiro .env")
-            messagebox.showinfo("Sucesso", "Configuração guardada com sucesso!")
+            self.update_status("Configuration saved to .env file")
+            messagebox.showinfo("Success", "Configuration saved successfully!")
         except Exception as e:
-            logging.error(f"Erro ao guardar configuração: {e}")
-            messagebox.showerror("Erro", f"Erro ao guardar configuração: {e}")
+            logging.error(f"Error saving configuration: {e}")
+            messagebox.showerror("Error", f"Error saving configuration: {e}")
             
     def insert_test_template(self):
-        """Insere um template de teste no editor."""
+        """Insert a test template into the editor."""
         template = {
-            "title": "Teste ChatGPT",
+            "title": "Test Event",
             "start": "2025-09-22T09:30:00+01:00",
             "end": "2025-09-22T10:00:00+01:00",
-            "description": "Evento de teste criado via Web App (Apps Script).",
-            "location": "Local de teste"
+            "description": "Test event created via Web App (Apps Script).",
+            "location": "Test Location"
         }
         
         self.json_editor.delete(1.0, tk.END)
@@ -241,24 +241,24 @@ class GoogleCalendarGUI:
         
     def send_to_webapp(self):
         """Envia o JSON para o Web App. Suporta evento único ou múltiplos eventos."""
-        # Validar configuração
+        # Validate configuration
         if not self.url_var.get().strip():
-            messagebox.showerror("Erro", "Web App URL é obrigatório")
+            messagebox.showerror("Error", "Web App URL is required")
             return
 
-        # Ler e validar JSON
+        # Read and validate JSON
         try:
             content = self.json_editor.get(1.0, tk.END).strip()
             if not content:
-                messagebox.showerror("Erro", "Editor de JSON está vazio")
+                messagebox.showerror("Error", "JSON editor is empty")
                 return
 
             parsed = json.loads(content)
         except json.JSONDecodeError as e:
-            messagebox.showerror("Erro", f"JSON inválido: {e}")
+            messagebox.showerror("Error", f"Invalid JSON: {e}")
             return
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro no JSON: {e}")
+            messagebox.showerror("Error", f"JSON error: {e}")
             return
 
         # Preparar lista de eventos a enviar

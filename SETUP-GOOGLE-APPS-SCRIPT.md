@@ -1,82 +1,82 @@
-# Configuração do Google Apps Script Web App
+# Google Apps Script Web App Configuration
 
-## Problema Identificado
+## Identified Problem
 
-O erro que está a receber é porque **todos os Web Apps do Google Apps Script precisam de uma função `doGet()`** como ponto de entrada, mesmo que a aplicação seja principalmente para processar POST requests.
+The error you're receiving is because **all Google Apps Script Web Apps need a `doGet()` function** as an entry point, even if the application is mainly for processing POST requests.
 
-## Solução
+## Solution
 
-### 1. Criar o Projeto no Google Apps Script
+### 1. Create Project in Google Apps Script
 
-1. Vá para [script.google.com](https://script.google.com)
-2. Clique em "Novo projeto"
-3. Apague o código padrão
-4. Cole o código do ficheiro `google-apps-script.gs`
-5. Guarde o projeto (Ctrl+S)
+1. Go to [script.google.com](https://script.google.com)
+2. Click "New project"
+3. Delete the default code
+4. Paste the code from the `google-apps-script.gs` file
+5. Save the project (Ctrl+S)
 
-### 2. Configurar Permissões
+### 2. Configure Permissions
 
-1. No menu, vá a "Executar" → "Executar função" → "testScript"
-2. Será pedido para autorizar o script
-3. Clique em "Revisar permissões"
-4. Escolha a sua conta Google
-5. Clique em "Avançado" → "Ir para [nome do projeto] (não seguro)"
-6. Clique em "Permitir"
+1. In the menu, go to "Run" → "Run function" → "testScript"
+2. You'll be asked to authorize the script
+3. Click "Review permissions"
+4. Choose your Google account
+5. Click "Advanced" → "Go to [project name] (unsafe)"
+6. Click "Allow"
 
-### 3. Publicar como Web App
+### 3. Publish as Web App
 
-1. No menu, vá a "Implementar" → "Nova implementação"
-2. Clique no ícone de engrenagem → "Web app"
+1. In the menu, go to "Deploy" → "New deployment"
+2. Click the gear icon → "Web app"
 3. Configure:
-   - **Descrição**: "Google Calendar Web App"
-   - **Executar como**: "Eu"
-   - **Quem tem acesso**: "Qualquer pessoa"
-4. Clique em "Implementar"
-5. **Copie o URL gerado** - este é o URL que deve usar na aplicação Python
+   - **Description**: "Google Calendar Web App"
+   - **Execute as**: "Me"
+   - **Who has access**: "Anyone"
+4. Click "Deploy"
+5. **Copy the generated URL** - this is the URL you should use in the Python application
 
-### 4. Testar o Web App
+### 4. Test the Web App
 
-#### Teste 1: GET Request (deve funcionar agora)
-- Abra o URL do Web App no browser
-- Deve ver uma resposta JSON com informações do Web App
+#### Test 1: GET Request (should work now)
+- Open the Web App URL in browser
+- You should see a JSON response with Web App information
 
-#### Teste 2: POST Request
-- Use a aplicação Python com o URL copiado
-- Configure um token (pode ser qualquer string para teste)
-- Teste com o template de evento
+#### Test 2: POST Request
+- Use the Python application with the copied URL
+- Configure a token (can be any string for testing)
+- Test with the event template
 
-### 5. Configurar na Aplicação Python
+### 5. Configure in Python Application
 
-1. Abra a aplicação Python
-2. No campo "Web App URL", cole o URL copiado do Google Apps Script
-3. No campo "Token", pode usar qualquer string (ex: "test-token")
-4. Clique em "Guardar .env"
+1. Open the Python application
+2. In the "Web App URL" field, paste the URL copied from Google Apps Script
+3. In the "Token" field, you can use any string (e.g., "test-token")
+4. Click "Save .env"
 
-## Estrutura do Código
+## Code Structure
 
-### Função `doGet()`
-- **Obrigatória** para todos os Web Apps
-- Responde a GET requests (quando acede ao URL no browser)
-- Retorna informações sobre o Web App
+### `doGet()` Function
+- **Required** for all Web Apps
+- Responds to GET requests (when accessing URL in browser)
+- Returns Web App information
 
-### Função `doPost()`
-- Processa POST requests da aplicação Python
-- Cria eventos no Google Calendar
-- Valida dados e retorna respostas JSON
+### `doPost()` Function
+- Processes POST requests from Python application
+- Creates events in Google Calendar
+- Validates data and returns JSON responses
 
-### Funções Auxiliares
-- `testScript()`: Testa se o script está funcionando
-- `listCalendars()`: Lista calendários disponíveis
+### Helper Functions
+- `testScript()`: Tests if the script is working
+- `listCalendars()`: Lists available calendars
 
-## Formato JSON Esperado
+## Expected JSON Format
 
 ```json
 {
-  "title": "Título do Evento",
+  "title": "Event Title",
   "start": "2025-01-15T10:00:00+01:00",
   "end": "2025-01-15T11:00:00+01:00",
-  "description": "Descrição do evento",
-  "location": "Local do evento (opcional)",
+  "description": "Event description",
+  "location": "Event location (optional)",
   "calendarId": "primary",
   "timeZone": "Europe/Lisbon",
   "reminders": {
@@ -86,32 +86,32 @@ O erro que está a receber é porque **todos os Web Apps do Google Apps Script p
 }
 ```
 
-## Resolução de Problemas
+## Troubleshooting
 
-### Erro: "doGet is not defined"
-- **Causa**: Função `doGet()` não existe
-- **Solução**: Adicione a função `doGet()` ao código
+### Error: "doGet is not defined"
+- **Cause**: `doGet()` function doesn't exist
+- **Solution**: Add the `doGet()` function to the code
 
-### Erro: "Script not authorized"
-- **Causa**: Script não tem permissões
-- **Solução**: Execute `testScript()` e autorize as permissões
+### Error: "Script not authorized"
+- **Cause**: Script doesn't have permissions
+- **Solution**: Run `testScript()` and authorize permissions
 
-### Erro: "Calendar not found"
-- **Causa**: Calendar ID incorreto
-- **Solução**: Use "primary" ou execute `listCalendars()` para ver IDs disponíveis
+### Error: "Calendar not found"
+- **Cause**: Incorrect Calendar ID
+- **Solution**: Use "primary" or run `listCalendars()` to see available IDs
 
-### Erro: "Access denied"
-- **Causa**: Web App não está público
-- **Solução**: Configure como "Qualquer pessoa" na implementação
+### Error: "Access denied"
+- **Cause**: Web App is not public
+- **Solution**: Configure as "Anyone" in deployment
 
-## Logs e Debug
+## Logs and Debug
 
-- Use `console.log()` no Google Apps Script para debug
-- Verifique os logs na aplicação Python (ficheiro `gcal_gui.log`)
-- Use a função "🔧 Debug" na aplicação Python para informações detalhadas
+- Use `console.log()` in Google Apps Script for debugging
+- Check logs in Python application (`gcal_gui.log` file)
+- Use the "🔧 Debug" function in Python application for detailed information
 
-## Segurança
+## Security
 
-- O Web App está configurado para aceitar qualquer pessoa
-- Para produção, considere implementar autenticação adequada
-- O token atual é apenas para identificação, não para autenticação real
+- The Web App is configured to accept anyone
+- For production, consider implementing proper authentication
+- The current token is just for identification, not for real authentication

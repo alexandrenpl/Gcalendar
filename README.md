@@ -1,53 +1,56 @@
-# Google Calendar GUI - Enviar Eventos
+# Google Calendar GUI - Send Events
 
-Aplicação desktop para Windows que permite enviar eventos para o Google Calendar através de um Web App do Google Apps Script.
+Desktop application for Windows that allows sending events to Google Calendar through a Google Apps Script Web App.
 
-## Características
+## Features
 
-- Interface gráfica simples e intuitiva
-- Configuração via ficheiro `.env`
-- Editor de JSON com validação e formatação
-- Templates pré-definidos para eventos
-- Envio seguro via HTTP POST com Bearer Token
-- Logging de erros técnicos
-- Suporta múltiplos eventos num único JSON
+- Simple and intuitive graphical interface
+- Configuration via `.env` file
+- JSON editor with validation and formatting
+- Pre-defined templates for events
+- Secure HTTP POST sending without authentication
+- Technical error logging
+- Supports multiple events in a single JSON
+- Multi-event payload handling
 
-## Requisitos
+## Requirements
 
-- Python 3.10 ou superior
+- Python 3.10 or higher
 - Windows 10/11
 
-## Instalação e Execução
+## Installation and Execution
 
-### 1. Instalar dependências
+### 1. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Executar a aplicação
+### 2. Run the application
 
 ```bash
 python gcal_gui.py
 ```
 
-## Criação do Executável (.exe)
+## Creating Executable (.exe)
 
-### 1. Instalar PyInstaller
+### 1. Install PyInstaller
 
 ```bash
 pip install pyinstaller
 ```
 
-### 2. Criar executável
+### 2. Create executable
 
 ```bash
-pyinstaller --onefile --windowed gcal_gui.py
+pyinstaller --onefile --windowed --name GoogleCalendarGUI gcal_gui.py
 ```
 
-O executável será criado em `dist/gcal_gui.exe`.
+The executable will be created in `dist/GoogleCalendarGUI.exe`.
 
-### Comandos rápidos (Windows PowerShell)
+**Note:** Some antiviruses may detect false positives in executables created with PyInstaller. This is normal and can be safely ignored.
+
+### Quick commands (Windows PowerShell)
 
 ```powershell
 python -m venv .venv
@@ -57,155 +60,153 @@ pip install pyinstaller
 pyinstaller --onefile --windowed --name GoogleCalendarGUI gcal_gui.py
 ```
 
-Após terminar, encontrará `dist/GoogleCalendarGUI.exe`.
+After completion, you'll find `dist/GoogleCalendarGUI.exe`.
 
-**Nota:** Alguns antivírus podem detectar falsos positivos em executáveis criados com PyInstaller. Isto é normal e pode ser ignorado com segurança.
+## Configuration
 
-## Configuração
+### .env File
 
-### Ficheiro .env
-
-A aplicação utiliza um ficheiro `.env` para guardar as configurações:
+The application uses a `.env` file to store configurations:
 
 ```
-WEB_APP_URL=https://script.google.com/macros/s/SEU_SCRIPT_ID/exec
+WEB_APP_URL=https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
 CALENDAR_ID=primary
 ```
 
-### Como obter as credenciais
+### How to get credentials
 
-1. **Web App URL**: URL do seu Google Apps Script Web App
-2. **Calendar ID**: ID do calendário (opcional - o script usa sempre o calendário padrão)
+1. **Web App URL**: URL of your Google Apps Script Web App
+2. **Calendar ID**: Calendar ID (optional - script always uses default calendar)
 
-## Utilização
+## Usage
 
-### 1. Configuração
+### 1. Configuration
 
-- Preencha os campos de configuração (URL, Calendar ID)
-- Clique em "Guardar .env" para persistir as configurações
+- Fill in the configuration fields (URL, Calendar ID)
+- Click "Save .env" to persist configurations
 
-### 2. Editor de JSON
+### 2. JSON Editor
 
-- Use "Inserir Template teste" para um exemplo básico
-- Carregue ficheiros JSON existentes
-- Formate o JSON para melhor legibilidade
-- Valide a sintaxe antes de enviar
+- Use "Insert Test Template" for a basic example
+- Load existing JSON files
+- Format JSON for better readability
+- Validate syntax before sending
 
-Suporta:
-- Evento único (objeto JSON)
-- Múltiplos eventos (objeto com chave `events` contendo uma lista)
-- Múltiplos eventos como lista no topo (top-level array)
+Supports:
+- Single event (JSON object)
+- Multiple events (object with `events` key containing a list)
+- Multiple events as top-level list (top-level array)
 
-### 3. Envio
+### 3. Sending
 
-- Clique em "Enviar para Web App"
-- A resposta aparecerá na área de resposta
-- Verifique o status HTTP e o conteúdo da resposta
+- Click "Send to Web App"
+- Response will appear in the response area
+- Check HTTP status and response content
 
-## Templates de JSON
+## JSON Templates
 
-### Evento único
+### Single Event
 
 ```json
 {
-  "title": "Teste ChatGPT",
+  "title": "Test Event",
   "start": "2025-09-22T09:30:00+01:00",
   "end": "2025-09-22T10:00:00+01:00",
-  "description": "Evento de teste criado via Web App (Apps Script).",
-  "location": "Local de teste"
+  "description": "Test event created via Web App (Apps Script).",
+  "location": "Test Location"
 }
 ```
 
-### Múltiplos eventos
+### Multiple Events
 
 ```json
 {
   "events": [
     {
-      "title": "Bloco Produtivo 1",
+      "title": "Productive Block 1",
       "start": "2025-09-22T09:00:00+01:00",
       "end": "2025-09-22T11:00:00+01:00",
-      "description": "Decidir tarefa concreta de manhã."
+      "description": "Decide concrete morning task."
     },
     {
-      "title": "Almoço + arrumar cozinha",
+      "title": "Lunch + kitchen cleanup",
       "start": "2025-09-22T13:00:00+01:00",
       "end": "2025-09-22T15:00:00+01:00",
-      "description": "Preparar almoço, comer e limpar a cozinha."
+      "description": "Prepare lunch, eat and clean kitchen."
     }
   ]
 }
 ```
 
-### Múltiplos eventos (lista no topo)
+### Multiple Events (top-level list)
 
 ```json
 [
   {
-    "title": "Evento A",
+    "title": "Event A",
     "start": "2025-09-23T09:00:00+01:00",
     "end": "2025-09-23T10:00:00+01:00",
-    "description": "Descrição do evento A"
+    "description": "Event A description"
   },
   {
-    "title": "Evento B",
+    "title": "Event B",
     "start": "2025-09-23T11:00:00+01:00",
     "end": "2025-09-23T12:00:00+01:00",
-    "location": "Local do evento B"
+    "location": "Event B location"
   }
 ]
 ```
 
-Notas:
-- A app envia um POST por evento ao seu Web App do Apps Script.
-- A área de resposta mostra um resumo com sucesso/falha por evento.
-- O script usa sempre o calendário padrão (não precisa de `calendarId`).
+Notes:
+- The app sends one POST per event to your Apps Script Web App.
+- The response area shows a summary with success/failure per event.
+- The script always uses the default calendar (no need for `calendarId`).
 
-## Estrutura de Ficheiros
+## File Structure
 
 ```
 Gcalendar/
-├── gcal_gui.py          # Aplicação principal
-├── requirements.txt     # Dependências Python
-├── README.md           # Este ficheiro
-├── .env                # Configurações (criado automaticamente)
-└── gcal_gui.log        # Log de erros (criado automaticamente)
+├── gcal_gui.py          # Main application
+├── requirements.txt     # Python dependencies
+├── README.md           # This file
+├── .env                # Configurations (created automatically)
+└── gcal_gui.log        # Error log (created automatically)
 ```
 
-## Resolução de Problemas
+## Troubleshooting
 
-### Erro de ligação
+### Connection Error
 
-- Verifique se o Web App URL está correto
-- Confirme que o Web App está publicado e acessível
-- Verifique a ligação à internet
+- Verify the Web App URL is correct
+- Confirm the Web App is published and accessible
+- Check internet connection
 
-### Erro de ligação ao Web App
+### Web App Connection Error
 
-- **Use o botão "🔧 Debug"** para verificar a configuração atual
-- Confirme que o Web App está publicado como "Anyone"
-- Verifique se o Web App tem as permissões necessárias para o Google Calendar
-- Teste o Web App URL diretamente no browser
-- Verifique o ficheiro `gcal_gui.log` para detalhes técnicos
+- **Use the "🔧 Debug" button** to check current configuration
+- Confirm the Web App is published as "Anyone"
+- Verify the Web App has necessary permissions for Google Calendar
+- Test the Web App URL directly in browser
+- Check the `gcal_gui.log` file for technical details
 
-### JSON inválido
+### Invalid JSON
 
-- Use o botão "Formatar JSON" para validar a sintaxe
-- Verifique se todas as chaves estão entre aspas
-- Confirme que vírgulas e chavetas estão corretas
+- Use the "Format JSON" button to validate syntax
+- Check all keys are in quotes
+- Confirm commas and braces are correct
 
-### Ferramentas de Debug
+### Debug Tools
 
-A aplicação inclui várias ferramentas para ajudar na resolução de problemas:
+The application includes several tools to help with troubleshooting:
 
-1. **Botão "🔧 Debug"** - Mostra informações detalhadas da configuração atual
-2. **Logs detalhados** - Ficheiro `gcal_gui.log` com informações técnicas
-3. **Teste de Web App** - Abre o URL diretamente no browser
+1. **"🔧 Debug" button** - Shows detailed information about current configuration
+2. **Detailed logs** - `gcal_gui.log` file with technical information
+3. **Web App Test** - Opens URL directly in browser
 
 ## Logs
 
-Os erros técnicos são registados no ficheiro `gcal_gui.log` para facilitar a resolução de problemas.
+Technical errors are logged in the `gcal_gui.log` file to facilitate troubleshooting.
 
-## Licença
+## License
 
-Este projeto é fornecido como está, sem garantias.
+This project is provided as-is, without warranties.
